@@ -7,7 +7,7 @@ parses a dynamic library file and tries to generate the pointers to functions de
   * searches the library libnameofthelibrary.so in /usr/lib and tries to extract functions symbols
   * searches the nameofthelibrary.h in headers and tries to extract the function signatures
   * also parses all defines.
-  * creates a map for each function pointer. (parsing needs improvement, I wrothe this this morning)
+  * creates a map for each function pointer. (parsing needs improvement, I wrote this on the saturday morning in 1 hour or so)
   * generates the table for funcptrs and the loading loop
   * just keep the name in the headers and do whatever you want with it.
 
