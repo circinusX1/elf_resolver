@@ -11,9 +11,7 @@
 
 // -------------- constants ---------------
 // review before compile...
-#define __LIBV4L2_H
-#define  __attribute__ ((visibility("default")))
-#define
+
 #define V4L2_DISABLE_CONVERSION 0x01
 #define V4L2_ENABLE_ENUM_FMT_EMULATION 0x02
 
@@ -47,7 +45,7 @@
 //         if it is anything else (including a video4linux1 device), v4l2_open will
 #define PF_it (* (if (*)(including,v4l2_open))                                     _ptr[12].ptr)
 //          int v4l2_open(const char *file, int oflag, ...);
-#define PF_v4l2_open (* ( int (*)(const,int,...))                     _ptr[13].ptr)
+#define PF_v4l2_open (* ( int (*)(const char*,int))                     _ptr[13].ptr) // fix this ???
 
 
 // -------------- all funcs array ---------------
@@ -108,4 +106,5 @@ inline const FUNCS_* load()
 const FUNCS_* _ptr; // global var
   _ptr = load(); // in main()
 */
+
 
