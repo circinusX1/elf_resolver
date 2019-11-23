@@ -4,7 +4,7 @@ parses a dynamic library file and tries to generate the pointers to functions an
 ## this is a shitty php script
 ### /pbuilder.php nameofthelibrary<cr>
   
-  * searches the library libnameofthelibrary.so in /usr/lib en gets symbols
+  * searches the library libnameofthelibrary.so in /usr/lib and tries to extract functions symbols
   * searches the nameofthelibrary.h in headers and tries to extract the function signatures
   * also parses all defines.
   * creates a map for each function pointer. (parsing needs improvement, I wrothe this this morning)
