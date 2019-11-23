@@ -1,7 +1,6 @@
 //
 // paste here the generated code from shell
 //
-
 #ifndef LIBR_RESOLVER_H
 #define LIBR_RESOLVER_H
 // Copyright Marius C. https://github/comarius (do not remove)
@@ -13,41 +12,42 @@
 // -------------- constants ---------------
 // review before compile...
 #define __LIBV4L2_H
-
+#define  __attribute__ ((visibility("default")))
+#define
 #define V4L2_DISABLE_CONVERSION 0x01
 #define V4L2_ENABLE_ENUM_FMT_EMULATION 0x02
 
 
 // -------------- functions ---------------
-// review before compile...  remove the garbage tokens manually...!!!
+// review before compile...
 //          ssize_t v4l2_write(int fd, const void *buffer, size_t n);
-#define PF_v4l2_write (* ( ssize_t (*)(int,const,size_t))             &_ptr[0])
+#define PF_v4l2_write (* ( ssize_t (*)(int,const,size_t))             _ptr[0].ptr)
 //          int v4l2_munmap(void *_start, size_t length);
-#define PF_v4l2_munmap (* ( int (*)(void,size_t))                     &_ptr[1])
+#define PF_v4l2_munmap (* ( int (*)(void,size_t))                     _ptr[1].ptr)
 //          void *v4l2_mmap(void *start, size_t length, int prot, int flags,
-#define PF_*v4l2_mmap (* ( void (*)(void,size_t,int,int,))            &_ptr[2])
+#define PF_*v4l2_mmap (* ( void (*)(void,size_t,int,int,))            _ptr[2].ptr)
 //          int v4l2_dup(int fd);
-#define PF_v4l2_dup (* ( int (*)(int))                                &_ptr[3])
+#define PF_v4l2_dup (* ( int (*)(int))                                _ptr[3].ptr)
 //         access to libv4l2 (currently there only is v4l2_fd_open here) */
-#define PF_libv4l2 (* (access to (*)(currently))                                   &_ptr[4]) //this is a parsing error
+#define PF_libv4l2 (* (access to (*)(currently))                                   _ptr[4].ptr)
 //          int v4l2_fd_open(int fd, int v4l2_flags);
-#define PF_v4l2_fd_open (* ( int (*)(int,int))                        &_ptr[5])
+#define PF_v4l2_fd_open (* ( int (*)(int,int))                        _ptr[5].ptr)
 //          int v4l2_get_control(int fd, int cid);
-#define PF_v4l2_get_control (* ( int (*)(int,int))                    &_ptr[6])
+#define PF_v4l2_get_control (* ( int (*)(int,int))                    _ptr[6].ptr)
 //          int v4l2_ioctl(int fd, unsigned long int request, ...);
-#define PF_v4l2_ioctl (* ( int (*)(int,unsigned,...))                 &_ptr[7])
+#define PF_v4l2_ioctl (* ( int (*)(int,unsigned,...))                 _ptr[7].ptr)
 //          int v4l2_set_control(int fd, int cid, int value);
-#define PF_v4l2_set_control (* ( int (*)(int,int,int))                &_ptr[8])
+#define PF_v4l2_set_control (* ( int (*)(int,int,int))                _ptr[8].ptr)
 //          int v4l2_close(int fd);
-#define PF_v4l2_close (* ( int (*)(int))                              &_ptr[9])
+#define PF_v4l2_close (* ( int (*)(int))                              _ptr[9].ptr)
 //         Another difference is that you can make v4l2_read() calls even on devices
-#define PF_difference (* (Another (*)())                                           &_ptr[10])  //this is a parsing error
+#define PF_difference (* (Another (*)())                                           _ptr[10].ptr)
 //          ssize_t v4l2_read(int fd, void *buffer, size_t n);
-#define PF_v4l2_read (* ( ssize_t (*)(int,void,size_t))               &_ptr[11])
+#define PF_v4l2_read (* ( ssize_t (*)(int,void,size_t))               _ptr[11].ptr)
 //         if it is anything else (including a video4linux1 device), v4l2_open will
-#define PF_it (* (if (*)(including,v4l2_open))                                     &_ptr[12]) //this is a parsing error
+#define PF_it (* (if (*)(including,v4l2_open))                                     _ptr[12].ptr)
 //          int v4l2_open(const char *file, int oflag, ...);
-#define PF_v4l2_open (* ( int (*)(const,int,...))                     &_ptr[13])
+#define PF_v4l2_open (* ( int (*)(const,int,...))                     _ptr[13].ptr)
 
 
 // -------------- all funcs array ---------------
@@ -105,6 +105,7 @@ inline const FUNCS_* load()
 #endif // LIB_RESOLVER
 /*
  add this to cpp
-const FUNCS_* &_ptr; // global var
-  &_ptr = load(); // in main()
+const FUNCS_* _ptr; // global var
+  _ptr = load(); // in main()
 */
+
