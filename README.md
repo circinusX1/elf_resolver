@@ -3,7 +3,7 @@ parses a dynamic library file and tries to generate the pointers to functions an
 
 
 ```
-marius@hpp:~/CPP/embix/src/modules$ ./pbuilder.php libv4l2
+marius@hpp:~/CPP/modules$ ./pbuilder.php libv4l2
 #ifndef LIBR_RESOLVER_H
 #define LIBR_RESOLVER_H
 // Copyright Marius C. https://github/comarius (do not remove)
