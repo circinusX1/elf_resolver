@@ -1,5 +1,5 @@
 # elf_resolver
-parses a dynamic library file and tries to generate the pointers to functions and they calls 
+parses a dynamic library file and tries to generate the pointers to functions definitions 
 
 ## this is a shitty php script
 ### /pbuilder.php nameofthelibrary<cr>
