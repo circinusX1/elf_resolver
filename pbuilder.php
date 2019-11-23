@@ -122,7 +122,7 @@ foreach($liste as $l)
     $line .=")) ";
 
     $line = str_pad($line,80," " );
-    $line .= "   &_ptr[".$X."])\n";
+    $line .= "   _ptr[".$X."].ptr)\n";
 
     $X++;
     echo $line;
