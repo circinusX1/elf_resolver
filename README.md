@@ -1,6 +1,8 @@
 # elf_resolver
 parses a dynamic library file and tries to generate the pointers to functions and they calls 
 
+## this is a shitty php script
+### /pbuilder.php nameofthelibrary<cr>
 
 ```
 marius@hpp:~/CPP/modules$ ./pbuilder.php libv4l2
