@@ -19,7 +19,7 @@
 
 
 // -------------- functions ---------------
-// review before compile...
+// review before compile...  remove the garbage tokens manually...!!!
 //          ssize_t v4l2_write(int fd, const void *buffer, size_t n);
 #define PF_v4l2_write (* ( ssize_t (*)(int,const,size_t))             &_ptr[0])
 //          int v4l2_munmap(void *_start, size_t length);
@@ -29,7 +29,7 @@
 //          int v4l2_dup(int fd);
 #define PF_v4l2_dup (* ( int (*)(int))                                &_ptr[3])
 //         access to libv4l2 (currently there only is v4l2_fd_open here) */
-#define PF_libv4l2 (* (access to (*)(currently))                                   &_ptr[4])
+#define PF_libv4l2 (* (access to (*)(currently))                                   &_ptr[4]) //this is a parsing error
 //          int v4l2_fd_open(int fd, int v4l2_flags);
 #define PF_v4l2_fd_open (* ( int (*)(int,int))                        &_ptr[5])
 //          int v4l2_get_control(int fd, int cid);
@@ -41,11 +41,11 @@
 //          int v4l2_close(int fd);
 #define PF_v4l2_close (* ( int (*)(int))                              &_ptr[9])
 //         Another difference is that you can make v4l2_read() calls even on devices
-#define PF_difference (* (Another (*)())                                           &_ptr[10])
+#define PF_difference (* (Another (*)())                                           &_ptr[10])  //this is a parsing error
 //          ssize_t v4l2_read(int fd, void *buffer, size_t n);
 #define PF_v4l2_read (* ( ssize_t (*)(int,void,size_t))               &_ptr[11])
 //         if it is anything else (including a video4linux1 device), v4l2_open will
-#define PF_it (* (if (*)(including,v4l2_open))                                     &_ptr[12])
+#define PF_it (* (if (*)(including,v4l2_open))                                     &_ptr[12]) //this is a parsing error
 //          int v4l2_open(const char *file, int oflag, ...);
 #define PF_v4l2_open (* ( int (*)(const,int,...))                     &_ptr[13])
 
