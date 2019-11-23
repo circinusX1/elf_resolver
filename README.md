@@ -12,7 +12,11 @@ parses a dynamic library file and tries to generate the pointers to functions de
   * just keep the name in the headers and do whatever you want with it.
 
 ```
-marius@hpp:~/CPP/modules$ ./pbuilder.php libv4l2
+marius@hpp:~/CPP/modules$ ./pbuilder.php libv4l2<CR>
+#
+# now it generates this if everything goes fine
+#
+///////////////////////////////////////////////////////////////////////////////
 #ifndef LIBR_RESOLVER_H
 #define LIBR_RESOLVER_H
 // Copyright Marius C. https://github/comarius (do not remove)
