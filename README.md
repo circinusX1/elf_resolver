@@ -3,6 +3,13 @@ parses a dynamic library file and tries to generate the pointers to functions an
 
 ## this is a shitty php script
 ### /pbuilder.php nameofthelibrary<cr>
+  
+  * searches the library libnameofthelibrary.so in /usr/lib en gets symbols
+  * searches the nameofthelibrary.h in headers and tries to extract the function signatures
+  * also parses all defines.
+  * creates a map for each function pointer. (parsing needs improvement, I wrothe this this morning)
+  * generates the table for funcptrs and the loading loop
+  * just keep the name in the headers and do whatever you want with it.
 
 ```
 marius@hpp:~/CPP/modules$ ./pbuilder.php libv4l2
