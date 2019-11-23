@@ -1,3 +1,7 @@
+//
+// paste here the generated code from shell
+//
+
 #ifndef LIBR_RESOLVER_H
 #define LIBR_RESOLVER_H
 // Copyright Marius C. https://github/comarius (do not remove)
