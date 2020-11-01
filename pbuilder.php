@@ -9,25 +9,25 @@ if($argc>1)
 if($argc>=3)
     $header = $argv[2];
 
-if(empty($lib) || empty($header))
+if(!empty($lib) )
 {
-    if(!empty($lib))
-    {
-        $l = explode("\n",trim(shell_exec("find /usr/lib -name {$lib}.so"),"\n"));
+        $l = explode("\n",trim(shell_exec("find /usr/lib -name lib{$lib}.so"),"\n"));
         $h = explode("\n",trim(shell_exec("find /usr/include -name {$lib}.h"),"\n"));
         if(count($l)!=1 || count($h)!=1)
         {
-            print_r($l);
-            print_r($h);
+	    var_dump($l);
+            var_dump($h);
             die("more than one found");
         }
         $lib = $l[0];
         $header = $h[0];
-    }
-
+}
+else
+{
+	die ("pass the library name with no extension and without the lib prefix eg: pthread\n");
 }
 
-$foos = shell_exec("readelf -s {$lib} | grep DEFAULT | grep GLOBAL | awk {'print $8'} | awk -F '@' '{print $1}'");
+$foos = shell_exec("readelf -s {$lib} | grep FUNC | grep DEFAULT | grep GLOBAL | grep -v '@@' | grep -v '__' | awk {'print $8'} | awk -F '@' '{print $1}'");
 $arr = explode("\n",$foos);
 
 
@@ -47,21 +47,40 @@ foreach ($hdr as $h)
 $liste = array();
 foreach ($arr as $f)
 {
-    foreach ($hdr as $h)
+    for($lh=0;$lh<count($hdr);$lh++)
     {
+	$h = $hdr[$lh];
         if(!empty($f) && strstr($h, $f) && strstr($h,"("))
         {
-            if(strstr($h,"(*")) continue; //ptr to foo
+            //echo " ----------  fline = ".$h. "\n";
 
-            $hh =str_replace("extern","",$h);
-            if(!in_array($hh, $liste, true)){
-                array_push($liste, trim($hh));
+	    if(strstr($h,"(*")) continue; //ptr to foo
+
+            $hh = str_replace("extern","",$h);
+            if(!in_array($hh, $liste, true))
+	    {
+		if(strstr($h,")"))
+                    array_push($liste, trim($hh));
+		else
+		{
+			do{
+				$lh++;
+				$h = trim($hdr[$lh]);
+			        $h = str_replace("extern","",$h);
+				$hh.=$h;
+			}while(!strstr($h,");"));
+                        array_push($liste, trim($hh));
+		}
             }
-            //break;
         }
     }
 
 }
+
+//print_r($liste);
+
+//die();
+
 echo "#ifndef LIBR_RESOLVER_H\n";
 echo "#define LIBR_RESOLVER_H\n";
 echo "// Copyright Marius C. https://github/comarius (do not remove)\n";
@@ -82,9 +101,10 @@ echo "// review before compile...\n";
 $X=0;
 foreach($liste as $l)
 {
-    echo "//         " .$l . "\n";
+    echo "\n//" .$l . "\n";
 
     $l = str_replace("\t"," ",$l);
+    //$l = str_replace(" ","",$l);
     $l = str_replace(", ",",",$l);
     $fp  = explode("(", $l);
     $left = trim($fp[0]);
@@ -95,29 +115,31 @@ foreach($liste as $l)
 
     $line  = "#define PF_";
 
-    if(count($f)!=3)
-    {
-        $funcs .= $f[1] .",";
-        $line .= $f[1] ." (* (". $f[0] ." (*)(";
-    }
-    else
-    {
-        $funcs .= $f[2] .",";
-        $line .= $f[2] ." (* (". $f[0]." ".$f[1] ." (*)(";
-    }
+     if(count($f) > 0 && count($f) != 3)
+     {
+         $funcs .= $f[1] .",";
+         $line .= $f[1] ." (* (". $f[0] ." (*)(";
+     }
+     else if(count(f) > 1)
+     {
+         $funcs .= $f[2] .",";
+         $line .= $f[2] ." (* (". $f[0]." ".$f[1] ." (*)(";
+     }
+
     $ips= 0;
 
     foreach($pars as $p)
     {
         $pp = ltrim($p);
-        $pp = rtrim($p);
-        $pp = str_replace(")","",$p);
+        $pp = rtrim($pp);
+        $pp = str_replace(")","",$pp);
         $pp = str_replace(";","",$pp);
 
         $ppp = preg_split('/\s+/', $pp);
-        if($ips)$line .= ",";
-        $line .= $ppp[0];
-        ++$ips;
+        if($ips) $line .= ",";
+        foreach($ppp as $pt)
+		$line .= $pt . " ";
+	++$ips;
     }
     $line .=")) ";
 
