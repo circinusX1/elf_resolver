@@ -27,7 +27,7 @@ else
 	die ("pass the library name with no extension and without the lib prefix eg: pthread\n");
 }
 
-$foos = shell_exec("readelf -s {$lib} | grep FUNC | grep DEFAULT | grep GLOBAL | grep -v '@@' | grep -v '__' | awk {'print $8'} | awk -F '@' '{print $1}'");
+$foos = shell_exec("readelf -s {$lib} | grep FUNC | grep DEFAULT | grep GLOBAL | grep -v 'GLIBC' | grep -v '__' | awk {'print $8'} | awk -F '@' '{print $1}'");
 $arr = explode("\n",$foos);
 
 
@@ -112,17 +112,21 @@ foreach($liste as $l)
     $right = trim($fp[1]);
 
     $pars   = explode(",", $right);
-
     $line  = "#define PF_";
 
      if(count($f) > 0 && count($f) != 3)
      {
+         while($f[1][0]=='*')
+            $f[1]=substr($f[1],1);
+
          $funcs .= $f[1] .",";
          $line .= $f[1] ." (* (". $f[0] ." (*)(";
      }
-     else if(count(f) > 1)
+     else if(count($f) > 1)
      {
-         $funcs .= $f[2] .",";
+         while($f[2][0]=='*')
+            $f[2]=substr($f[2],1);
+        $funcs .= $f[2] .",";
          $line .= $f[2] ." (* (". $f[0]." ".$f[1] ." (*)(";
      }
 
