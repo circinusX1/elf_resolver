@@ -124,6 +124,9 @@ inline const FUNCS_* load()
 const FUNCS_* _ptr; // global var
   _ptr = load(); // in main() 
 
+// call
+PF_v4l2_read(params,...);
+
 ```
 
 
