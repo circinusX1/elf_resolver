@@ -12,14 +12,11 @@ parses a dynamic library file and tries to generate the pointers to functions de
   * just keep the name in the headers and do whatever you want with it.
 
 ```
-marius@hpp:~/CPP/modules$ ./pbuilder.php libv4l2<CR>
-#
-# now it generates this if everything goes fine
-#
-///////////////////////////////////////////////////////////////////////////////
+
 #ifndef LIBR_RESOLVER_H
 #define LIBR_RESOLVER_H
 // Copyright Marius C. https://github/comarius (do not remove)
+#include <cstdint>
 #include <stdio.h>
 #include <errno.h>
 #include <dlfcn.h>
@@ -27,43 +24,129 @@ marius@hpp:~/CPP/modules$ ./pbuilder.php libv4l2<CR>
 
 // -------------- constants ---------------
 // review before compile...
-#define __LIBV4L2_H
-#define LIBV4L_PUBLIC __attribute__ ((visibility("default")))
-#define LIBV4L_PUBLIC
-#define V4L2_DISABLE_CONVERSION 0x01
-#define V4L2_ENABLE_ENUM_FMT_EMULATION 0x02
+#define __AO_H__
+#define AO_TYPE_LIVE 1
+#define AO_TYPE_FILE 2
+#define AO_ENODRIVER   1
+#define AO_ENOTFILE    2
+#define AO_ENOTLIVE    3
+#define AO_EBADOPTION  4
+#define AO_EOPENDEVICE 5
+#define AO_EOPENFILE   6
+#define AO_EFILEEXISTS 7
+#define AO_EBADFORMAT  8
+#define AO_EFAIL       100
+#define AO_FMT_LITTLE 1
+#define AO_FMT_BIG    2
+#define AO_FMT_NATIVE 4
+
+
+///  Manually added start {
+struct ao_option;
+typedef struct ao_option{
+  char *key;
+  char *value;
+  struct ao_option *next; /* number of audio channels */
+} ao_option;
+
+
+typedef struct {
+  int  type; /* live output or file output? */
+  char *name; /* full name of driver */
+  char *short_name; /* short name of driver */
+  char *comment; /* driver comment */
+  int  preferred_byte_format;
+  int  priority;
+  char **options;
+  int  option_count;
+} ao_info;
+
+typedef struct {
+  int  bits; /* bits per sample */
+  int  rate; /* samples per second (in a single channel) */
+  int  channels; /* number of audio channels */
+  int  byte_format; /* Byte ordering in sample, see constants below */
+  char *matrix; /* channel input matrix */
+} ao_sample_format;
+
+struct ao_functions;
+typedef struct {
+  int  type; /* live output or file output? */
+  int  driver_id;
+  ao_functions *funcs;
+  FILE *file; /* File for output if this is a file driver */
+  int  client_byte_format;
+  int  machine_byte_format;
+  int  driver_byte_format;
+  char *swap_buffer;
+  int  swap_buffer_size; /* Bytes allocated to swap_buffer */
+  void *internal; /* Pointer to driver-specific data */
+} ao_device;
+
+struct ao_functions {
+	   int (*test)(void);
+	   ao_info* (*driver_info)(void);
+	   int (*device_init)(ao_device *device);
+	   int (*set_option)(ao_device *device, const char *key,
+						 const char *value);
+	   int (*open)(ao_device *device, ao_sample_format *format);
+	   int (*play)(ao_device *device, const char *output_samples,
+						  uint32_t num_bytes);
+	   int (*close)(ao_device *device);
+	   void (*device_clear)(ao_device *device);
+	   char* (*file_extension)(void);
+};
+
+///  Manually added end }
 
 
 // -------------- functions ---------------
 // review before compile...
-//         LIBV4L_PUBLIC ssize_t v4l2_write(int fd, const void *buffer, size_t n);
-#define PF_v4l2_write (* (LIBV4L_PUBLIC ssize_t (*)(int,const,size_t))             &_ptr[0])
-//         LIBV4L_PUBLIC int v4l2_munmap(void *_start, size_t length);
-#define PF_v4l2_munmap (* (LIBV4L_PUBLIC int (*)(void,size_t))                     &_ptr[1])
-//         LIBV4L_PUBLIC void *v4l2_mmap(void *start, size_t length, int prot, int flags,
-#define PF_*v4l2_mmap (* (LIBV4L_PUBLIC void (*)(void,size_t,int,int,))            &_ptr[2])
-//         LIBV4L_PUBLIC int v4l2_dup(int fd);
-#define PF_v4l2_dup (* (LIBV4L_PUBLIC int (*)(int))                                &_ptr[3])
-//         access to libv4l2 (currently there only is v4l2_fd_open here) */
-#define PF_libv4l2 (* (access to (*)(currently))                                   &_ptr[4])
-//         LIBV4L_PUBLIC int v4l2_fd_open(int fd, int v4l2_flags);
-#define PF_v4l2_fd_open (* (LIBV4L_PUBLIC int (*)(int,int))                        &_ptr[5])
-//         LIBV4L_PUBLIC int v4l2_get_control(int fd, int cid);
-#define PF_v4l2_get_control (* (LIBV4L_PUBLIC int (*)(int,int))                    &_ptr[6])
-//         LIBV4L_PUBLIC int v4l2_ioctl(int fd, unsigned long int request, ...);
-#define PF_v4l2_ioctl (* (LIBV4L_PUBLIC int (*)(int,unsigned,...))                 &_ptr[7])
-//         LIBV4L_PUBLIC int v4l2_set_control(int fd, int cid, int value);
-#define PF_v4l2_set_control (* (LIBV4L_PUBLIC int (*)(int,int,int))                &_ptr[8])
-//         LIBV4L_PUBLIC int v4l2_close(int fd);
-#define PF_v4l2_close (* (LIBV4L_PUBLIC int (*)(int))                              &_ptr[9])
-//         Another difference is that you can make v4l2_read() calls even on devices
-#define PF_difference (* (Another (*)())                                           &_ptr[10])
-//         LIBV4L_PUBLIC ssize_t v4l2_read(int fd, void *buffer, size_t n);
-#define PF_v4l2_read (* (LIBV4L_PUBLIC ssize_t (*)(int,void,size_t))               &_ptr[11])
-//         if it is anything else (including a video4linux1 device), v4l2_open will
-#define PF_it (* (if (*)(including,v4l2_open))                                     &_ptr[12])
-//         LIBV4L_PUBLIC int v4l2_open(const char *file, int oflag, ...);
-#define PF_v4l2_open (* (LIBV4L_PUBLIC int (*)(const,int,...))                     &_ptr[13])
+
+//int   ao_append_global_option(const char *key,const char *value);
+#define PF_ao_append_global_option (* (int (*)(const char *key ,const char *value ))    _ptr[0].ptr)
+
+//int          ao_append_option(ao_option **options,const char *key,const char *value);
+#define PF_ao_append_option (* (int (*)(ao_option **options ,const char *key ,const char *value ))    _ptr[1].ptr)
+
+//int                  ao_close(ao_device *device);
+#define PF_ao_close (* (int (*)(ao_device *device ))                               _ptr[2].ptr)
+
+//int      ao_default_driver_id(void);
+#define PF_ao_default_driver_id (* (int (*)(void ))                                _ptr[3].ptr)
+
+//int              ao_driver_id(const char *short_name);
+#define PF_ao_driver_id (* (int (*)(const char *short_name ))                      _ptr[4].ptr)
+
+//ao_info       *ao_driver_info(int driver_id);
+#define PF_ao_driver_info (* (ao_info (*)(int driver_id ))                         _ptr[5].ptr)
+
+//ao_info **ao_driver_info_list(int *driver_count);
+#define PF_ao_driver_info_list (* (ao_info (*)(int *driver_count ))                _ptr[6].ptr)
+
+//const char *ao_file_extension(int driver_id);
+#define PF_ao_file_extension (* (const char (*)(int driver_id ))                   _ptr[7].ptr)
+
+//void          ao_free_options(ao_option *options);
+#define PF_ao_free_options (* (void (*)(ao_option *options ))                      _ptr[8].ptr)
+
+//void ao_initialize(void);
+#define PF_ao_initialize (* (void (*)(void ))                                      _ptr[9].ptr)
+
+//int          ao_is_big_endian(void);
+#define PF_ao_is_big_endian (* (int (*)(void ))                                    _ptr[10].ptr)
+
+//ao_device*       ao_open_file(int driver_id,const char *filename,int overwrite,ao_sample_format *format,ao_option *option);
+#define PF_ao_open_file (* (ao_device* (*)(int driver_id ,const char *filename ,int overwrite ,ao_sample_format *format ,ao_option *option ))    _ptr[11].ptr)
+
+//ao_device*       ao_open_live(int driver_id,ao_sample_format *format,ao_option *option);
+#define PF_ao_open_live (* (ao_device* (*)(int driver_id ,ao_sample_format *format ,ao_option *option ))    _ptr[12].ptr)
+
+//int                   ao_play(ao_device *device,char *output_samples,uint32_t num_bytes);
+#define PF_ao_play (* (int (*)(ao_device *device ,char *output_samples ,uint32_t num_bytes ))    _ptr[13].ptr)
+
+//void ao_shutdown(void);
+#define PF_ao_shutdown (* (void (*)(void ))                                        _ptr[14].ptr)
 
 
 // -------------- all funcs array ---------------
@@ -72,7 +155,7 @@ struct FUNCS_ {
   void  (*ptr)(void);
 };
 
-inline const FUNCS_* load()
+inline const FUNCS_* load(void** dll)
 {
     union
     {
@@ -81,24 +164,25 @@ inline const FUNCS_* load()
     } u;
 
     static struct FUNCS_ _funcs[] ={
-        {"v4l2_write", nullptr},
-        {"v4l2_munmap", nullptr},
-        {"*v4l2_mmap", nullptr},
-        {"v4l2_dup", nullptr},
-        {"libv4l2", nullptr},
-        {"v4l2_fd_open", nullptr},
-        {"v4l2_get_control", nullptr},
-        {"v4l2_ioctl", nullptr},
-        {"v4l2_set_control", nullptr},
-        {"v4l2_close", nullptr},
-        {"difference", nullptr},
-        {"v4l2_read", nullptr},
-        {"it", nullptr},
-        {"v4l2_open", nullptr},
+        {"ao_append_global_option", nullptr},
+        {"ao_append_option", nullptr},
+        {"ao_close", nullptr},
+        {"ao_default_driver_id", nullptr},
+        {"ao_driver_id", nullptr},
+        {"ao_driver_info", nullptr},
+        {"ao_driver_info_list", nullptr},
+        {"ao_file_extension", nullptr},
+        {"ao_free_options", nullptr},
+        {"ao_initialize", nullptr},
+        {"ao_is_big_endian", nullptr},
+        {"ao_open_file", nullptr},
+        {"ao_open_live", nullptr},
+        {"ao_play", nullptr},
+        {"ao_shutdown", nullptr},
         {nullptr, nullptr}
     };
-    void  *dll_handle;
-    if ((dll_handle = dlopen("/usr/lib/x86_64-linux-gnu/libv4l2.so", RTLD_LAZY)) == 0)
+    //void  *dll_handle;
+    if ((*dll = dlopen("/usr/lib/x86_64-linux-gnu/libao.so", RTLD_LAZY)) == 0)
     {
         perror("cannot load:");
         return nullptr;
@@ -106,7 +190,7 @@ inline const FUNCS_* load()
     struct FUNCS_ *fp = _funcs;
     for (; fp->name != nullptr; fp++)
     {
-        u.p = dlsym(dll_handle, fp->name);
+        u.p = dlsym(*dll, fp->name);
         if (u.fp == 0)
         {
             perror("cannot load:");
@@ -119,13 +203,8 @@ inline const FUNCS_* load()
     return _funcs;
 }
 #endif // LIB_RESOLVER
-/*
- add this to cpp 
-const FUNCS_* _ptr; // global var
-  _ptr = load(); // in main() 
 
-// call
-PF_v4l2_read(params,...);
+
 
 ```
 
