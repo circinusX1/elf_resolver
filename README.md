@@ -9,7 +9,7 @@ parses a dynamic library file and tries to generate the pointers to functions de
   * also parses all defines.
   * creates a map for each function pointer. (parsing needs improvement, I wrote this on the saturday morning in 1 hour or so)
   * generates the table for funcptrs and the loading loop
-  * just keep the name in the headers and do whatever you want with it.
+  * NO-LICENSE LICENSE
 
 ```
 
