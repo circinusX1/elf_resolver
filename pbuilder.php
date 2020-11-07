@@ -15,7 +15,7 @@ if(!empty($lib) )
         $h = explode("\n",trim(shell_exec("find /usr/include -name {$lib}.h"),"\n"));
         if(count($l)!=1 || count($h)!=1)
         {
-	    var_dump($l);
+ 	        var_dump($l);
             var_dump($h);
             die("more than one found");
         }
@@ -27,10 +27,12 @@ else
 	die ("pass the library name with no extension and without the lib prefix eg: pthread\n");
 }
 
-$foos = shell_exec("readelf -s {$lib} | grep FUNC | grep DEFAULT | grep GLOBAL | grep -v 'GLIBC' | grep -v '__' | awk {'print $8'} | awk -F '@' '{print $1}'");
+//echo "//readelf -s {$lib} | grep FUNC | grep DEFAULT | grep GLOBAL | grep -v 'GLIBC' | grep -v '__' | awk {'print $8'} | awk -F '@' '{print $1}'";
+//$foos = shell_exec("readelf -s {$lib} | grep FUNC | grep DEFAULT | grep GLOBAL | grep -v 'GLIBC' | grep -v '__' | awk {'print $8'} | awk -F '@' '{print $1}'");
+
+echo "// parsing: nm -D  {$lib} | grep ' T ' | awk '{print $3}'";
+$foos = shell_exec("nm -D  {$lib} | grep ' T ' | awk '{print $3}'\n");
 $arr = explode("\n",$foos);
-
-
 $hdr = explode("\n",file_get_contents($header));
 
 $funcs="";
@@ -43,38 +45,48 @@ foreach ($hdr as $h)
     }
 }
 
+$keywords = array("enum","const","null","mutable","volatile");
+
 
 $liste = array();
+$coment=false;
 foreach ($arr as $f)
 {
     for($lh=0;$lh<count($hdr);$lh++)
     {
-	$h = $hdr[$lh];
+     	$h = $hdr[$lh];
+//        if(strstr($h,"/*")) { $coment=true; continue;} //ptr to foo
+//        if(strstr($h,"*/")) { $coment=false; continue;} //ptr to foo
+//        if($coment) continue;
+        
         if(!empty($f) && strstr($h, $f) && strstr($h,"("))
         {
             //echo " ----------  fline = ".$h. "\n";
 
-	    if(strstr($h,"(*")) continue; //ptr to foo
+	        if(strstr($h,"(*")) continue; //ptr to foo
 
             $hh = str_replace("extern","",$h);
             if(!in_array($hh, $liste, true))
-	    {
-		if(strstr($h,")"))
-                    array_push($liste, trim($hh));
-		else
-		{
-			do{
-				$lh++;
-				$h = trim($hdr[$lh]);
-			        $h = str_replace("extern","",$h);
-				$hh.=$h;
-			}while(!strstr($h,");"));
-                        array_push($liste, trim($hh));
-		}
+	        {
+  	           if(strstr($hh,")")){
+                    if(!in_array($hh,$keywords))
+                         array_push($liste, trim($hh));
+               }
+	    	   else
+	    	   {
+	       		do{
+	    			$lh++;
+	    			$h = trim($hdr[$lh]);
+	    		        $h = str_replace("extern","",$h);
+	    			$hh.=$h;
+	    		}while(!strstr($h,");"));
+                  $ht = trim($hh);
+                  if(!in_array($ht,$keywords))
+                      array_push($liste, trim($hh));
+	       	  }
             }
         }
     }
-
 }
 
 //print_r($liste);
@@ -118,19 +130,22 @@ foreach($liste as $l)
      {
          while($f[1][0]=='*')
             $f[1]=substr($f[1],1);
-
-         $funcs .= $f[1] .",";
-         $line .= $f[1] ." (* (". $f[0] ." (*)(";
+         if(!in_array($f[1],$keywords)){
+            $funcs .= $f[1] .",";
+            $line .= $f[1] ." (* (". $f[0] ." (*)(";
+        }
      }
      else if(count($f) > 1)
      {
-         while($f[2][0]=='*')
+        while($f[2][0]=='*')
             $f[2]=substr($f[2],1);
-        $funcs .= $f[2] .",";
-         $line .= $f[2] ." (* (". $f[0]." ".$f[1] ." (*)(";
+        if(!in_array($f[2],$keywords)){
+             $funcs .= $f[2] .",";
+             $line .= $f[2] ." (* (". $f[0]." ".$f[1] ." (*)(";
+        }
      }
 
-    $ips= 0;
+     $ips= 0;
 
     foreach($pars as $p)
     {
@@ -142,8 +157,8 @@ foreach($liste as $l)
         $ppp = preg_split('/\s+/', $pp);
         if($ips) $line .= ",";
         foreach($ppp as $pt)
-		$line .= $pt . " ";
-	++$ips;
+		    $line .= $pt . " ";
+	    ++$ips;
     }
     $line .=")) ";
 
@@ -204,5 +219,16 @@ echo "add this to cpp \n";
 echo "const FUNCS_* _ptr; // global var\n ";
 echo " _ptr = load(); // in main() \n";
 echo "*/\n ";
+
+echo "//----------------------------------------------------------------------\n";
+$tk=strtok($funcs,",");
+echo "/*\n";
+do{
+    echo "  Sqrat::RootTable(v).Func(\"{$tk}\",PF_{$tk});\n";
+}while($tk=strtok(","));
+echo "*/\n";
+
+
+
 ?>
 
