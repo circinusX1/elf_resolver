@@ -48,31 +48,7 @@ parses a dynamic library file and tries to generate the pointers to functions de
 struct ao_option;
 typedef struct ao_option{
   char *key;
-  char *value;/*
- add this to cpp 
-const FUNCS_* _ptr; // global var
-  _ptr = load(); // in main() 
-*/
- //----------------------------------------------------------------------
-/*
-  Sqrat::RootTable(v).Func("ao_append_global_option",PF_ao_append_global_option);
-  Sqrat::RootTable(v).Func("ao_append_option",PF_ao_append_option);
-  Sqrat::RootTable(v).Func("ao_close",PF_ao_close);
-  Sqrat::RootTable(v).Func("ao_default_driver_id",PF_ao_default_driver_id);
-  Sqrat::RootTable(v).Func("ao_driver_id",PF_ao_driver_id);
-  Sqrat::RootTable(v).Func("ao_driver_info",PF_ao_driver_info);
-  Sqrat::RootTable(v).Func("ao_driver_info_list",PF_ao_driver_info_list);
-  Sqrat::RootTable(v).Func("ao_file_extension",PF_ao_file_extension);
-  Sqrat::RootTable(v).Func("ao_free_options",PF_ao_free_options);
-  Sqrat::RootTable(v).Func("ao_initialize",PF_ao_initialize);
-  Sqrat::RootTable(v).Func("ao_is_big_endian",PF_ao_is_big_endian);
-  Sqrat::RootTable(v).Func("ao_open_file",PF_ao_open_file);
-  Sqrat::RootTable(v).Func("ao_open_live",PF_ao_open_live);
-  Sqrat::RootTable(v).Func("ao_play",PF_ao_play);
-  Sqrat::RootTable(v).Func("ao_shutdown",PF_ao_shutdown);
-*/
-
-
+  char *value;
   struct ao_option *next; /* number of audio channels */
 } ao_option;
 
@@ -249,12 +225,6 @@ const FUNCS_* _ptr; // global var
   Sqrat::RootTable(v).Func("ao_driver_info_list",PF_ao_driver_info_list);
   Sqrat::RootTable(v).Func("ao_file_extension",PF_ao_file_extension);
   Sqrat::RootTable(v).Func("ao_free_options",PF_ao_free_options);/*
- add this to cpp 
-const FUNCS_* _ptr; // global var
-  _ptr = load(); // in main() 
-*/
- //----------------------------------------------------------------------
-/*
   Sqrat::RootTable(v).Func("ao_append_global_option",PF_ao_append_global_option);
   Sqrat::RootTable(v).Func("ao_append_option",PF_ao_append_option);
   Sqrat::RootTable(v).Func("ao_close",PF_ao_close);
@@ -273,20 +243,9 @@ const FUNCS_* _ptr; // global var
 */
 
 
-  Sqrat::RootTable(v).Func("ao_initialize",PF_ao_initialize);
-  Sqrat::RootTable(v).Func("ao_is_big_endian",PF_ao_is_big_endian);
-  Sqrat::RootTable(v).Func("ao_open_file",PF_ao_open_file);
-  Sqrat::RootTable(v).Func("ao_open_live",PF_ao_open_live);
-  Sqrat::RootTable(v).Func("ao_play",PF_ao_play);
-  Sqrat::RootTable(v).Func("ao_shutdown",PF_ao_shutdown);
-*/
-
-
 
 ```
 
-
-## Used by amutrion project to create headers for plugin libraries extensions
 
 
 
