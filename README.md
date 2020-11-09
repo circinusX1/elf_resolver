@@ -44,7 +44,7 @@ parses a dynamic library file and tries to generate the pointers to functions de
 #define AO_FMT_NATIVE 4
 
 
-///  Manually added start {
+///  From here to the 'to here' I added these definitions manually though the parser is not yet extracting the types {
 struct ao_option;
 typedef struct ao_option{
   char *key;
@@ -100,7 +100,7 @@ struct ao_functions {
 	   char* (*file_extension)(void);
 };
 
-///  Manually added end }
+///  to here }
 
 
 // -------------- functions ---------------
