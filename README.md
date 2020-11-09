@@ -10,6 +10,9 @@ parses a dynamic library file and tries to generate the pointers to functions de
   * creates a map for each function pointer. (parsing needs improvement, I wrote this on the saturday morning in 1 hour or so)
   * generates the table for funcptrs and the loading loop
   * NO-LICENSE LICENSE
+  
+  
+  #### Example: Generated header file for libao.so 
 
 ```
 
